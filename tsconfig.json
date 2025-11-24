@@ -40,6 +40,11 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "@modules/*":["src/modules/*"],
+      "@src/*":["src/*"]
+
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,

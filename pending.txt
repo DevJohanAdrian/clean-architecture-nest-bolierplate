@@ -11,16 +11,19 @@ generar seralizacion con class-tramsfor (Serializacion) x
 Agregar vitest y configurarlo x
 Agregar husky y lint stage conventional commits x
 prettier x
-eslint
+eslint x
 keep alive 
 Public path
 migrations de typeorm 
+seeder 
 Crear lista de decoradores custom (awesome-nest-boilerplate)
 Handle errores
+Implementacion de endpoints con majeo de errores y y validacion de datos para asegegurar que el cliente envie informacion correcta
+Autorizacion (Definicion de permisos y roles)
 
 
 @nestjs/cache-manager (Cacheo)
-Agregar jwt
+Agregar jwt y OAuth
 
 Agregar ci/cd
 Agregar middleware de errores (hof)

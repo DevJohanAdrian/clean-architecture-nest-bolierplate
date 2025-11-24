@@ -12,6 +12,8 @@ import { JwtStrategy } from '@src/strategies/jwt-strategy';
   imports: [
     UsersModule,
     TypeOrmModule.forFeature([RefreshToken]),
+    // jwt se importa desde @nestjs/jwt para poder usar jwtservice en authservice y crear jwt, no se importa en app modulo porque solo se necesita aqui.
+    // se pasa secret y signOptions para que queden por default en caso de usar jwtService en otro lugar y no pasar estos parametros.
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: process.env.JWT_EXPIRATION || '15m' },

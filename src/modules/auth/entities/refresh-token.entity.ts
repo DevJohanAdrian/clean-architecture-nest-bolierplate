@@ -12,7 +12,7 @@ export class RefreshToken {
   @ManyToOne(() => User, (user) => user.refreshTokens, { onDelete: 'CASCADE' })
   user: User;
 
-  @CreateDateColumn()
+  @CreateDateColumn() // lo crea en la primera inserccion del la fila automaticamente
   createdAt: Date;
 
   @Column({ type: 'timestamp', nullable: true })

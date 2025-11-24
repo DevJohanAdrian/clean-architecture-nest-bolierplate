@@ -24,7 +24,8 @@ export class AuthController {
     return this.authService.refreshToken(body.userId, body.refreshToken);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard) // dispara jwtstrategy que valida en token y regresa un req.user en el metodo validate en caso de que el jwt sea valido
+  // @AuthUser('id') extrae el id de req.user, pero puede extraer otros campos que esten dentro de el obj user
   @Post('logout')
   async logout(@AuthUser('id') userId: string) {
     return this.authService.logout(userId);

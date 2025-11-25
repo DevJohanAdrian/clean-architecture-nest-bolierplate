@@ -25,7 +25,7 @@ export const DatabaseProvider: DynamicModule = TypeOrmModule.forRootAsync({
       password: config.get<string>('DB_PASSWORD'),
       database: config.get<string>('DB_NAME'),
       autoLoadEntities: true,
-      synchronize: isDevelopmentEnv,
+      synchronize: isDevelopmentEnv, // en produccion debe de ser false
       migrations: ['dist/database/migrations/*.js'],
       entities: ['dist/**/*.entity.js'],
       cli: {

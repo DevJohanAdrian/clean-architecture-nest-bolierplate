@@ -1,18 +1,23 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, MinLength, IsOptional, IsString , IsEmail} from 'class-validator';
+import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 //generar seralizacion con class-tramsfor
 export class CreateUserDto {
+  @IsEmail()
+  @Transform(({ value }) => value.toLowerCase().trim())
+  email: string;
+
   @IsString()
-  readonly email: string;
+  @IsNotEmpty()
+  @Transform(({ value }) => value.trim())
+  name: string;
 
-  @IsOptional()
   @IsString()
-  readonly age: string;
+  @MinLength(6)
+  password: string;
 
-  @IsNumber()
-  readonly name: number;
-
-  @IsNumber()
-  readonly country: number;
+  // @IsOptional()
+  // @IsString()
+  // roleCode?: string;
 }

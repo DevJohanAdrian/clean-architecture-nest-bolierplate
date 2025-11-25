@@ -1,18 +1,23 @@
-import { Injectable, UnauthorizedException, Module } from '@nestjs/common';
+import {  ConfigService } from '@nestjs/config';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '@modules/users/users.service'
+import { UsersService } from '@modules/users/users.service';
+import { User } from '@modules/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RefreshToken } from './entities/refresh-token.entity';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { LoginDto, RegisterDto } from './dto';
+import { Authrepository } from './auth.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
+    private authRepository: Authrepository,
     @InjectRepository(RefreshToken) private rtRepo: Repository<RefreshToken>,
   ) {}
 
@@ -36,44 +41,43 @@ export class AuthService {
     return this.createTokensForUser(user);
   }
 
-  private async createTokensForUser(user) {
-    const payload = { sub: user.id, email: user.email, roles: user.roles };
+  private async createTokensForUser(user: User) {
+    const payload = { sub: user.id, email: user.email, role: user.role };
 
-    const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET,
-      expiresIn: process.env.JWT_EXPIRATION || '15m',
-    });
+    // Sign without passing secret/expiresIn - they're configured in the module
+    const accessToken = this.jwtService.sign(payload);
 
     // Create a refresh token (random string) and store hashed
     const refreshPlain = crypto.randomBytes(64).toString('hex');
-    const hashed = await bcrypt.hash(refreshPlain, Number(process.env.BCRYPT_SALT || 10));
+    const saltRounds = this.configService.get<number>('BCRYPT_SALT', 10);
+    const hashed = await bcrypt.hash(refreshPlain, saltRounds);
 
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7); // ej. 7 days
 
-    const rt = this.rtRepo.create({ token: hashed, user, expiresAt });
-    await this.rtRepo.save(rt);
+    const rt = await this.authRepository.create({ token: hashed, user, expiresAt });
+    await this.authRepository.save(rt);
 
     return {
       accessToken,
       refreshToken: refreshPlain, // deliver plain to client; store only hashed
       expiresAt,
-      user: { id: user.id, email: user.email, roles: user.roles },
+      user: { id: user.id, email: user.email, role: user.role },
     };
   }
 
   async refreshToken(userId: string, refreshTokenPlain: string) {
-    const tokens = await this.rtRepo.find({ where: { user: { id: userId } } , relations: ['user']});
+    const tokens = await this.authRepository.find(userId)
     for (const t of tokens) {
       const match = await bcrypt.compare(refreshTokenPlain, t.token);
       if (match) {
         // Optional: check expiry
         if (t.expiresAt && t.expiresAt < new Date()) {
-          await this.rtRepo.remove(t);
+          await this.authRepository.remove(t);
           throw new UnauthorizedException('Refresh token expirado');
         }
         // rotate: delete old token and issue new pair
-        await this.rtRepo.remove(t);
+        await this.authRepository.remove(t);
         return this.createTokensForUser(t.user);
       }
     }
@@ -82,7 +86,7 @@ export class AuthService {
 
   async logout(userId: string) {
     // delete user's refresh tokens
-    await this.rtRepo.delete({ user: { id: userId } } as any);
+    await this.authRepository.delete(userId);
     return true;
   }
 }

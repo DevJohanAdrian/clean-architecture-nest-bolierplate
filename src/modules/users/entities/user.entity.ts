@@ -1,7 +1,7 @@
 
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { RefreshToken } from '@modules/auth/entities/refresh-token.entity';
-import { Role } from '@src/common/enum';
+import { Role } from './roles.entity';
 
 
 
@@ -19,8 +19,12 @@ export class User {
   @Column()
   password: string; // hashed
 
-  @Column({ type: 'simple-array', default: Role.USER })
-  roles: Role[];
+  // --------------------------------
+  // NUEVO: relación con Role
+  // --------------------------------
+  @ManyToOne(() => Role, role => role.users, { eager: true })
+  @JoinColumn({ name: 'roleId' })
+  role: Role;
 
   @OneToMany(() => RefreshToken, rt => rt.user, { cascade: true })
   refreshTokens: RefreshToken[];

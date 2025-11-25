@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Param, Delete, Req, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Req, Res } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
 import { IUser } from './interfaces/user.interface';
 
 @Controller('users')
@@ -26,40 +26,66 @@ export class UsersController {
    * abuse of the user creation endpoint.
    */
   // @Throttle({ short: { ttl: 60000, limit: 3 }, long: { ttl: 3600000, limit: 20 } })
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
   // @Post()
-  // create(@Req() req: Request, @Res() res: Response) {
-  //   // Accede al cuerpo de la solicitud directamente
-  //   const createUserDto = req.body as CreateUserDto;
-
-  //   // Llama al servicio y responde con el resultado
-  //   const result = this.usersService.create(createUserDto);
-  //   return res.status(201).json(result);
+  // create(@Body() createUserDto: CreateUserDto) {
+  //   return this.usersService.createUser(createUserDto);
   // }
 
-  @Get('getall')
-  findAll(@Req() req: Request, @Res() res: Response) {
-    res.json('hola mundo');
-    // return this.usersService.findAll();
-    // :Promise<IUser>
-  }
+  // // @Post()
+  // // create(@Req() req: Request, @Res() res: Response) {
+  // //   // Accede al cuerpo de la solicitud directamente
+  // //   const createUserDto = req.body as CreateUserDto;
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
-  }
+  // //   // Llama al servicio y responde con el resultado
+  // //   const result = this.usersService.create(createUserDto);
+  // //   return res.status(201).json(result);
+  // // }
+
+  // @Get('getall')
+  // findAll(@Req() req: Request, @Res() res: Response) {
+  //   res.json('hola mundo');
+  //   // return this.usersService.findAll();
+  //   // :Promise<IUser>
+  // }
+
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.usersService.findOne(id);
+  // }
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
   //   return this.usersService.update(+id, updateUserDto);
   // }
 
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.usersService.remove(id);
+  // }
+
+
+   @Post()
+  create(@Body() data: CreateUserDto) {
+    return this.usersService.createUser(data);
+  }
+
+  @Get()
+  findAll() {
+    return this.usersService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(id);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+    return this.usersService.update(id, dto);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.remove(id);
   }
 }

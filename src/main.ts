@@ -5,7 +5,7 @@ import { ClassSerializerInterceptor, ValidationPipe, VersioningType } from '@nes
 import { AppModule } from './app.module';
 import { middlewaresConfiguration } from './main.middleware';
 import { AppLoggerService } from './shared/services/logger.service';
-import { ResponseInterceptor } from './interceptors/reponse-interceptor';
+import { ResponseInterceptor, RequestLoggingInterceptor } from './interceptors';
 import {NestExpressApplication} from '@nestjs/platform-express'
 
 async function bootstrap() {
@@ -31,8 +31,8 @@ async function bootstrap() {
 
   // Serializacion interceptors
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  // interceptor de respuesta global
-  app.useGlobalInterceptors(new ResponseInterceptor());
+  // interceptor de respuesta global (orden importa)
+  app.useGlobalInterceptors( new RequestLoggingInterceptor(logger), new ResponseInterceptor());
 
 
   // Pipes para deserializacion (Json -> class DTO)

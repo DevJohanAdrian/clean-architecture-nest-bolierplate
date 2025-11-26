@@ -22,6 +22,14 @@ Implementacion de endpoints con majeo de errores y y validacion de datos para as
 Autorizacion (Definicion de permisos y roles)
 
 
+Documentacion
+testing
+Pruebas con postman
+s3 para subida de archivos
+Prubas en el ratelimit
+swagger documentar las entidades
+
+
 @nestjs/cache-manager (Cacheo)
 Agregar jwt y OAuth
 

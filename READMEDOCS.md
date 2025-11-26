@@ -1295,3 +1295,9 @@ Este boilerplate está basado en las mejores prácticas de la comunidad de NestJ
 
 **Última actualización:** Noviembre 2024  
 **Versión de la documentación:** 1.0.0
+
+
+migration:generate	Genera migración desde cambios detectados en entidades
+migration:run	Ejecuta migraciones
+migration:revert	Revierte la última migración
+typeorm	Entrada global para CLI usando el datasource

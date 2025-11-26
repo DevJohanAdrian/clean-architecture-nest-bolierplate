@@ -42,7 +42,8 @@
     "baseUrl": "./",
     "paths": {
       "@modules/*":["src/modules/*"],
-      "@src/*":["src/*"]
+      "@src/*":["src/*"],
+      "@shared/*":["src/shared/*"]
 
     },
     "incremental": true,

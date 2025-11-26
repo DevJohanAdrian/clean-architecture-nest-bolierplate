@@ -24,6 +24,11 @@
   },
   "main": "dist/main.js",
   "scripts": {
+    "seed": "ts-node -r tsconfig-paths/register src/database/seeds/seed.ts",
+    "typeorm": "node --require ts-node/register --require tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/database/data-source.ts",
+    "migration:generate": "npm run typeorm -- migration:generate src/database/migrations/migration -o",
+    "migration:run": "npm run typeorm -- migration:run",
+    "migration:revert": "npm run typeorm -- migration:revert",
     "build": "npm run build:clean && nest build --path tsconfig.build.json",
     "dev": "nest start --watch --debug=0.0.0.0:9229",
     "build:clean": "rimraf dist; exit 0",

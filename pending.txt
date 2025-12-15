@@ -20,6 +20,7 @@ Crear lista de decoradores custom (awesome-nest-boilerplate)
 Handle errores
 Implementacion de endpoints con majeo de errores y y validacion de datos para asegegurar que el cliente envie informacion correcta
 Autorizacion (Definicion de permisos y roles)
+Trabajar con jwt y refresh token
 
 
 Documentacion

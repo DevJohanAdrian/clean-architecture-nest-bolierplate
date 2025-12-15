@@ -44,7 +44,7 @@ export class SeedService {
 
 
     // saltRounds para contraseña y refreshtoken
-    const saltRounds = Number(this.configService.get<number>('BCRYPT_SALT') ?? 10);
+    const saltRounds = Number(this.configService.get<number>('BCRYPT_SALT') ?? 12);
 
     // 2. Crear usuario admin
     const hashedPassword = await bcrypt.hash('123456', saltRounds);
